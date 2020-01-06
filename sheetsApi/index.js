@@ -1,4 +1,5 @@
 const { google } = require('googleapis');
+const formatSheetData = require('./formatSheetData');
 
 const authorize = async (sheetsRequestFn) => {
   const jwt = new google.auth.JWT(
@@ -23,7 +24,7 @@ const authorize = async (sheetsRequestFn) => {
   }
 };
 
-const getSheetWithAuth = async (auth, sheet) => {
+const getSheetWithAuth = async (auth, sheet, dir) => {
   const sheets = google.sheets({ version:'v4', auth });
 
   const response = await sheets.spreadsheets.values.get({
@@ -31,11 +32,11 @@ const getSheetWithAuth = async (auth, sheet) => {
     range: sheet
   });
 
-  return response.data.values;
+  return formatSheetData(response.data.values, dir);
 };
 
-const getSheet = async (sheet) => {
-  return await authorize(async (auth) => await getSheetWithAuth(auth, sheet));
+const getSheet = async (sheet, dir) => {
+  return await authorize(async (auth) => await getSheetWithAuth(auth, sheet, dir));
 };
 
 module.exports = {

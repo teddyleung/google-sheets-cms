@@ -6,12 +6,9 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-app.get('/', (req, res) => {
-  res.json({hello: 'world'});
-});
-
 app.get('/:sheet', async (req, res) => {
-  const data = await getSheet(req.params.sheet);
+  const dir = req.query.dir === 'COL' ? 'COL' : 'ROW'; 
+  const data = await getSheet(req.params.sheet, dir);
   res.json(data);
 });
 
