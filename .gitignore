@@ -1,0 +1,9 @@
+# Node Modules
+node_modules
+
+# Credentials
+credentials.json
+.env
+
+# Misc
+.DS_Store
