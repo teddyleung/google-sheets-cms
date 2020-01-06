@@ -1,9 +1,5 @@
 const { google } = require('googleapis');
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
-
 const authorize = async (sheetsRequestFn) => {
   const jwt = new google.auth.JWT(
     process.env.GOOGLE_CLIENT_EMAIL,
@@ -27,19 +23,21 @@ const authorize = async (sheetsRequestFn) => {
   }
 };
 
-const getValues = async (auth) => {
+const getSheetWithAuth = async (auth, sheet) => {
   const sheets = google.sheets({ version:'v4', auth });
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-    range: 'users'
+    range: sheet
   });
 
-  return response.data;
+  return response.data.values;
 };
 
-const run = async () => {
-  console.log(await authorize(getValues));
+const getSheet = async (sheet) => {
+  return await authorize(async (auth) => await getSheetWithAuth(auth, sheet));
 };
 
-run();
+module.exports = {
+  getSheet
+};
